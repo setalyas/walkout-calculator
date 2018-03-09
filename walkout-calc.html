@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<!--
+Created using JS Bin
+
+http://jsbin.com
+
+
+Copyright (c) 2018 by anonymous (http://jsbin.com/poretejono/1/edit)
+
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+
+<meta name="robots" content="noindex">
+
+<html>
+
+<head>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<meta charset="utf-8">
+
+	<meta name="viewport" content="width=device-width">
+
+	<title>Walk-out time calculator</title>
+
+	<style id="jsbin-css">
+
+	body {
+  padding: 30px;
+}
+
+	</style>
+
+</head>
+
+<body style="padding:10px;">
+
+<form action="" id="walkout_time" onsubmit="return false;">
+   <fieldset>
+    <legend>Change the numbers to get your own walk-out time</legend>
+     <p>If you're suffering from the sharp end of a pay gap where you work, then why work til the end of your shift? Clock off early!</p>
+    <p><label>What's your pay gap? (e.g. by gender, race)</label>
+    <input type="number"  name="paygap" value="10"
+           onclick="getTotal()" style="width:15%" min="0" max="100" />%</p>
+     <p>N.B. if your workplace doesn't publish pay gap figures, then try these general ones:
+       <a href="https://gender-pay-gap.service.gov.uk/Viewing/search-results?y=2017">Gov.uk</a>,
+       <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupbyoccupation2digitsocashetable20">ONS</a>,
+       <a href="https://data.oecd.org/earnwage/gender-wage-gap.htm">OECD</a>.       
+     </p>
+    <p><label>When do you start work?</label>
+    <input type="number" name="start_time_hr" value="9"
+           onclick="getTotal()" style="width:15%" min="0" max="23" />
+      : 
+    <input type="number"  name="start_time_min" value="30"
+           onclick="getTotal()" style="width:15%" min="0" max="59" /></p>
+    <p><label>When do you finish work?</label>
+    <input type="number" name="end_time_hr" value="17"
+           onclick="getTotal()" style="width:15%" min="0" max="23" />
+      : 
+    <input type="number"  name="end_time_min" value="30"
+           onclick="getTotal()" style="width:15%" min="0" max="59" /></p>
+    
+     <p><input id="clickMe" type="button" value="Click to calculate" onclick="getTotal();" /></p>
+   
+    <div id="clockOff"></div>
+ 
+    </fieldset>
+</form>
+<script id="jsbin-javascript">
+
+function getQuantity()
+{
+    var theForm = document.forms["walkout_time"];
+    var payGap = 100 - theForm.elements["paygap"].value;
+    var startTime_hr = parseInt(theForm.elements["start_time_hr"].value);
+    var startTime_min = parseInt(theForm.elements["start_time_min"].value);
+    var startTime = startTime_hr + startTime_min/60;
+    var endTime_hr = parseInt(theForm.elements["end_time_hr"].value);
+    var endTime_min = parseInt(theForm.elements["end_time_min"].value);
+    var endTime = endTime_hr + endTime_min/60;
+    // get the time spent at work
+    var workTime = endTime - startTime;
+    // add that back to the work start time, with the pay gap factored out
+    var newEndTime = workTime * (payGap / 100) + startTime;
+    var newEndTime_hr = Math.floor(newEndTime);
+    var newEndTime_min = Math.floor((newEndTime - newEndTime_hr)*60);
+    return newEndTime_hr + ":" + newEndTime_min.toLocaleString(undefined, {minimumIntegerDigits: 2});
+}
+
+function getTotal()
+{
+    var clockOffTime = getQuantity();
+
+    //display the result
+    document.getElementById('clockOff').innerHTML =
+        "You should clock off at " + clockOffTime + ".";
+ 
+}
+</script>
+
+</body>
+</html>
